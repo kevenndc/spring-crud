@@ -1,6 +1,7 @@
 <template>
   <div class="relative border-b-2 focus-within:border-blue-500">
     <input
+      class="block w-full appearance-none focus:outline-none bg-transparent"
       type="email"
       placeholder=" "
       :name="name"
@@ -8,7 +9,6 @@
       :required="required"
       :value="modelValue"
       @input="$emit(`update:modelValue`, $event.target.value)"
-      class="block w-full appearance-none focus:outline-none bg-transparent"
     />
     <label :for="name" class="absolute top-0 -z-1 duration-300 origin-0">
       {{ label }}

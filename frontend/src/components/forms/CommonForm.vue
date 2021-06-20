@@ -9,7 +9,7 @@
         name="first_name"
         label="Nome"
         :required="true"
-        v-model="form.nome"
+        v-model="entity.firstName"
       />
       <!-- /Nome -->
 
@@ -18,14 +18,14 @@
         name="last_name"
         label="Sobrenome"
         :required="true"
-        v-model="form.sobrenome"
+        v-model="entity.lastName"
       />
       <!-- /Sobrenome -->
     </div>
 
     <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2">
       <!-- E-mail -->
-      <email-input name="email" label="E-mail" v-model="form.email" />
+      <email-input name="email" label="E-mail" v-model="entity.email" />
       <!-- /E-mail -->
 
       <!-- Telefone -->
@@ -34,7 +34,7 @@
         label="Telefone"
         :required="true"
         mask="(##) #####-####"
-        v-model="form.telefone"
+        v-model="entity.phone"
       />
       <!-- /Telefone -->
     </div>
@@ -44,29 +44,29 @@
       <toggle-input
         name="legal_entity"
         label="É Pessoa Jurídica?"
-        v-model="form.pessoa_juridica"
+        v-model="entity.isLegalEntity"
       />
       <!-- /É pessoa jurídica? -->
 
       <!-- CPF -->
       <text-input
-        v-if="!pessoaJuridica"
+        v-if="!entity.isLegalEntity"
         name="cpf"
         label="CPF"
         :required="true"
         mask="###.###.###-##"
-        v-model="form.cpf"
+        v-model="entity.cpf"
       />
       <!-- /CPF -->
 
       <!-- CNPJ -->
       <text-input
-        v-if="pessoaJuridica"
+        v-if="entity.isLegalEntity"
         name="cnpj"
         label="CNPJ"
         :required="true"
         mask="##.###.###/####-##"
-        v-model="form.cnpj"
+        v-model="entity.cnpj"
       />
       <!-- CNPJ -->
     </div>
@@ -76,11 +76,11 @@
   </form>
 </template>
 <script>
-// Componentes
-import TextInput from "./form-parts/TextInput.vue";
-import EmailInput from "./form-parts/EmailInput.vue";
-import ToggleInput from "./form-parts/ToggleInput.vue";
-import SubmitButton from "./form-parts/SubmitButton.vue";
+import TextInput from "../form-parts/TextInput.vue";
+import EmailInput from "../form-parts/EmailInput.vue";
+import ToggleInput from "../form-parts/ToggleInput.vue";
+import SubmitButton from "../form-parts/SubmitButton.vue";
+import Entity from "../../models/Entity";
 
 export default {
   components: {
@@ -90,55 +90,27 @@ export default {
     SubmitButton,
   },
 
-  data() {
-    return {
-      form: {
-        nome: "",
-        sobrenome: "",
-        nome_completo: "",
-        email: "",
-        telefone: "",
-        pessoa_juridica: false,
-        cpf: "",
-        cnpj: "",
-      }
-    };
+  props: {
+      entity: Entity
   },
 
   methods: {
     submitForm(event) {
-      this.$emit('submit:new_register', this.form);
-      this.clearForm(event);
-    },
-
-    clearForm(event) {
+      this.$emit('submit:form', this.entity);
       event.target.reset();
-      this.form = {}
-    }
+    },
   },
 
   computed: {
-    zap() {
-      return this.form;
-    },
-
-    pessoaJuridica() {
-      return this.form.pessoa_juridica;
-    },
-
     nomeCompleto() {
-      const nomeCompleto = `${this.form.nome} ${this.form.sobrenome}`;
-      return nomeCompleto;
+      return `${this.entity.firstName} ${this.entity.lastName}`;
     },
   },
 
   watch: {
-    zap(val) {
-      console.log(val);
-    },
     nomeCompleto(val) {
-      this.form.nome_completo = val;
+      this.entity.fullName = val;
     },
   },
-};
+}
 </script>
